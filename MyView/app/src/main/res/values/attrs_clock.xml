@@ -1,0 +1,9 @@
+<resources>
+
+
+
+    <declare-styleable name="Clock">
+        <attr name="clockRadius" format="integer"/>
+    </declare-styleable>
+
+</resources>
