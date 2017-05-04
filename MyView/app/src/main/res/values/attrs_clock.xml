@@ -1,9 +1,15 @@
 <resources>
 
 
-
     <declare-styleable name="Clock">
-        <attr name="clockRadius" format="integer"/>
+        <attr name="clockRadius" format="integer|dimension|float" />
+        <attr name="oneTextColor" format="color" />
+        <attr name="oneTextTextSize" format="dimension|float|integer" />
+        <attr name="twoTextColor" format="color" />
+        <attr name="twoTextTextSize" format="dimension|float|integer" />
+
+        <attr name="insideColor" format="dimension|float|integer" />
+        <attr name="inOutSpace" format="dimension" />
     </declare-styleable>
 
 </resources>
