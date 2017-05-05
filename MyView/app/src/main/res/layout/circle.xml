@@ -1,0 +1,18 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/widget_margin">
+
+    <com.myview.widght.Circle
+        android:id="@+id/test"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        app:clockRadius="100dp"
+        app:clickable="true"
+        app:oneTextTextSize="16dp" />
+
+    <!--app:oneTextColor="@color/color1"-->
+    <!--app:twoTextColor="@color/color2"-->
+</RelativeLayout>
