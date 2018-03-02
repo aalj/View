@@ -24,5 +24,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="自定义Toast" />
+    <Button
+        android:id="@+id/button3"
+        android:onClick="onClick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="跳过" />
 
 </LinearLayout>

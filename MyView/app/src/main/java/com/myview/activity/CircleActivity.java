@@ -15,6 +15,7 @@ public class CircleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.circle);
         Circle circle = (Circle) findViewById(R.id.test);
+        circle.isScanView(true);
         circle.setOnClickListener(new Circle.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -22,7 +23,6 @@ public class CircleActivity extends AppCompatActivity {
             }
         });
 //        circle.setClickable(true);
-        circle.isScanView(false);
         circle.setShowScaView(false);
     }
 }

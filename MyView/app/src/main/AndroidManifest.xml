@@ -17,6 +17,7 @@
         </activity>
         <activity android:name=".activity.CircleActivity" />
         <activity android:name=".activity.CustomToastActivity"></activity>
+        <activity android:name="com.myview.activity.JumpActivity"></activity>
     </application>
 
 </manifest>

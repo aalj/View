@@ -77,7 +77,7 @@ public class Circle extends View {
 
     Handler mHandler = new Handler();
 
-    private boolean isScan = false;
+    private boolean isScan = true;
 
 
     /**

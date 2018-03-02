@@ -27,10 +27,13 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
             case R.id.button2:
-                intent = new Intent(this,CustomToastActivity.class);
+                intent = new Intent(this, CustomToastActivity.class);
+                break;
+            case R.id.button3:
+                intent = new Intent(this, JumpActivity.class);
                 break;
         }
-        if (intent!=null) {
+        if (intent != null) {
             startActivity(intent);
         }
 

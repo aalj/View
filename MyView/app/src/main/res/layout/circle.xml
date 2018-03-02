@@ -7,7 +7,7 @@
     <com.myview.widght.Circle
         android:id="@+id/test"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:clickable="false"
         app:clockRadius="100dp"
         app:clickable="true"
