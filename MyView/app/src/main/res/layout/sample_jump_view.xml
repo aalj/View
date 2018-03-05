@@ -5,10 +5,14 @@
 
     <com.myview.widght.JumpView
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:background="#ccc"
-        app:jumpTextColor="#33b5e5"
-        app:jumpTextSize="20dp"
-        app:jumpString="Hello, JumpView" />
+        app:jumpTime="1000"
+        app:jumpBackRadio="50dp"
+        app:jumpTextColor="#091115"
+        app:jumpBackGroupColor="@color/color1"
+        app:jumpFrameColor="@color/colorPrimary"
+        app:jumpTextSize="20dp" />
 
 </FrameLayout>

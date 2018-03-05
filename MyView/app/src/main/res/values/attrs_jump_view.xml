@@ -1,9 +1,10 @@
 <resources>
     <declare-styleable name="JumpView">
-        <attr name="jumpString" format="string" />
+        <attr name="jumpTime" format="integer" />
         <attr name="jumpTextColor" format="color" />
         <attr name="jumpBackGroupColor" format="color" />
         <attr name="jumpFrameColor" format="color" />
         <attr name="jumpTextSize" format="dimension" />
+        <attr name="jumpBackRadio" format="dimension" />
     </declare-styleable>
 </resources>

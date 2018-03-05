@@ -5,13 +5,17 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
+import android.graphics.RectF;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
 import com.myview.R;
+
+import java.util.TimerTask;
 
 
 /**
@@ -20,17 +24,16 @@ import com.myview.R;
 public class JumpView extends View {
 
     private final String TAG = JumpView.class.getSimpleName();
-
-
-    private String mTextString;
+    //倒计时时间
+    private int mTextTime = 5 * 1000;
+    private float yuanjiao = 360 / (mTextTime * 1f);
+    //文字的颜色
     private int mJumpTextColor = Color.RED;
-    private Drawable mExampleDrawable;
-    private float mTextSize = 10;
+    private float mTextRadio = 300;
+    private float mTextSize = mTextRadio / 2;
 
 
     private TextPaint mTextPaint;
-    private float mTextWidth;
-    private float mTextHeight;
 
     //背景默认颜色
     private int backgroupColor = 0xAA448982;
@@ -53,6 +56,10 @@ public class JumpView extends View {
     private int mWidth;
     private int mHeight;
 
+    private int frameSize = 10;
+
+    private boolean isShow = true;
+
     public JumpView(Context context) {
         super(context);
         init(null, 0);
@@ -73,8 +80,8 @@ public class JumpView extends View {
         final TypedArray a = getContext().obtainStyledAttributes(
                 attrs, R.styleable.JumpView, defStyle, 0);
 
-        mTextString = a.getString(
-                R.styleable.JumpView_jumpString);
+        mTextTime = a.getInt(
+                R.styleable.JumpView_jumpTime, mTextTime);
         mJumpTextColor = a.getColor(
                 R.styleable.JumpView_jumpTextColor,
                 mJumpTextColor);
@@ -82,6 +89,9 @@ public class JumpView extends View {
         mTextSize = a.getDimension(
                 R.styleable.JumpView_jumpTextSize,
                 mTextSize);
+        mTextRadio = a.getDimension(
+                R.styleable.JumpView_jumpBackRadio,
+                mTextRadio);
 
         backgroupColor = a.getColor(R.styleable.JumpView_jumpBackGroupColor, backgroupColor);
         frameColor = a.getColor(R.styleable.JumpView_jumpFrameColor, frameColor);
@@ -89,6 +99,8 @@ public class JumpView extends View {
 
 
         initPaint();
+        mTextSize = mTextSize <= mTextRadio / 2 ? mTextSize : mTextRadio / 2;
+        yuanjiao = 360 / (mTextTime * 1f);
 
         // Update TextPaint and text measurements from attributes
         invalidateTextPaintAndMeasurements();
@@ -99,18 +111,7 @@ public class JumpView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-
-        final int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
-        final int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
-        final int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
-        final int heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
-        if (widthSpecMode == MeasureSpec.AT_MOST && heightSpecMode == MeasureSpec.AT_MOST) {
-            setMeasuredDimension((int) mTextWidth, (int) (mTextHeight+mTextSize));
-        } else if (widthSpecMode == MeasureSpec.AT_MOST) {
-            setMeasuredDimension((int) mTextWidth, heightSpecSize);
-        } else if (heightSpecMode == MeasureSpec.AT_MOST) {
-            setMeasuredDimension(widthSpecSize, (int) (mTextHeight+mTextSize));
-        }
+        setMeasuredDimension((int) mTextRadio * 2, (int) mTextRadio * 2);
 
         paddingLeft = getPaddingLeft();
         paddingTop = getPaddingTop();
@@ -161,6 +162,8 @@ public class JumpView extends View {
         framePaint.setStyle(Paint.Style.STROKE);
         framePaint.setAntiAlias(true);
         framePaint.setColor(frameColor);
+        framePaint.setStrokeWidth(frameSize);
+
 
     }
 
@@ -168,43 +171,79 @@ public class JumpView extends View {
     private void invalidateTextPaintAndMeasurements() {
         mTextPaint.setTextSize(mTextSize);
         mTextPaint.setColor(mJumpTextColor);
-        mTextWidth = mTextPaint.measureText(mTextString);
+        mTextPaint.setTextAlign(Paint.Align.CENTER);
 
-        Paint.FontMetrics fontMetrics = mTextPaint.getFontMetrics();
-        mTextHeight = fontMetrics.bottom;
+        setBackgroundColor(0xffffffff);
+
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        // TODO: consider storing these as member variables to reduce
-        // allocations per draw cycle.
-
-
         int width = getWidth();
         int height = getHeight();
-        Log.e(TAG, String.format("width---->  %s", width));
-        Log.e(TAG, String.format("height---->  %s", height));
-
-
-        int contentWidth = width - paddingLeft - paddingRight;
-        int contentHeight = height - paddingTop - paddingBottom;
-
+        //转移画布的原点,用于更加方便的计算
+        canvas.translate(width / 2, height / 2);
+        canvas.save();
+        //画背景圆
+        canvas.drawCircle(0, 0, mTextRadio, backGPaint);
         // Draw the text.
-        canvas.drawText(mTextString,
-                0 / 2,
-                0 / 2,
+        canvas.drawText(String.valueOf(mTextTime),
+                0,
+                0 + mTextSize / 2,
                 mTextPaint);
+        canvas.restore();
+
+        int i = frameSize / 2;
+        canvas.save();
+        //绘制圆弧
+        RectF oval = new RectF(
+                -mTextRadio + i,
+                -mTextRadio + i,
+                mTextRadio - i,
+                mTextRadio - i); // 用于定义的圆弧的形状和大小的界限
+
+        float sweepAngle = 360 - yuanjiao * mTextTime;
+        Log.e(TAG, String.format("圆弧旋转的角度   %s", sweepAngle));
+        canvas.drawArc(oval, -90, sweepAngle, false, framePaint); // 根据进度画圆弧
+        canvas.restore();
+
+
+        if (isShow) {
+            Message message = handler.obtainMessage(1);     // Message
+            handler.sendMessageDelayed(message, 1);
+            isShow = false;
+        }
     }
+
+    final Handler handler = new Handler() {
+
+        public void handleMessage(Message msg) {         // handle message
+            switch (msg.what) {
+                case 1:
+                    Log.e(TAG, String.format("开始倒计时   %s", mTextTime));
+                    if (mTextTime > 0) {
+                        Message message = handler.obtainMessage(1);
+                        handler.sendMessageDelayed(message, 1);      // send message
+                        invalidate();
+                    }
+                    mTextTime--;
+                    break;
+                default:
+                    break;
+            }
+
+            super.handleMessage(msg);
+        }
+    };
 
     /**
      * Gets the example string attribute value.
      *
      * @return The example string attribute value.
      */
-    public String getExampleString() {
-        return mTextString;
+    public int getExampleString() {
+        return mTextTime;
     }
 
     /**
@@ -213,8 +252,8 @@ public class JumpView extends View {
      *
      * @param exampleString The example string attribute value to use.
      */
-    public void setExampleString(String exampleString) {
-        mTextString = exampleString;
+    public void setExampleString(int exampleString) {
+        mTextTime = exampleString;
         invalidateTextPaintAndMeasurements();
     }
 
@@ -239,22 +278,4 @@ public class JumpView extends View {
     }
 
 
-    /**
-     * Gets the example drawable attribute value.
-     *
-     * @return The example drawable attribute value.
-     */
-    public Drawable getExampleDrawable() {
-        return mExampleDrawable;
-    }
-
-    /**
-     * Sets the view's example drawable attribute value. In the example view, this drawable is
-     * drawn above the text.
-     *
-     * @param exampleDrawable The example drawable attribute value to use.
-     */
-    public void setExampleDrawable(Drawable exampleDrawable) {
-        mExampleDrawable = exampleDrawable;
-    }
 }
